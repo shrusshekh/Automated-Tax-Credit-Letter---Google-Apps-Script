@@ -1,4 +1,4 @@
-# Automated-Tax-Credit-Letter - Google-Apps-Script
+# Automated-Tax-Credit-Letter - Google Apps Script
 This project automates the creation of personalized tax credit letters directly from a Google Sheet using Google Apps Script. This project was developed as part of my summer job to streamline the process of generating personalized letters for my coworkers. To make the script understandable for non-technical users I added clear in-code comments indicating which parts of the script can and cannot be changed, making it easy for my coworkers to adapt without breaking the automation.
 
 Below is a guide I prepared for my coworkers following the completion of this project. 
