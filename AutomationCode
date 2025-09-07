@@ -1,0 +1,90 @@
+// This project was developed as part of a summer job to streamline the process of generating tax credit letters for my coworkers.
+// To make the script understandable for non-technical audiences, I added clear in-code comments indicating which parts of the script can and cannot be changed.
+
+// DO NOT CHANGE
+function onOpen() {
+  SpreadsheetApp.getUi()
+    .createMenu("Automate")
+    .addItem("Generate Letters", "generateLetters")
+    .addToUi();
+}
+
+
+// ONLY ".getSheetByName(NAME OF TAB OF SHEET)" CAN BE CHANGED
+function generateLetters() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Sheet1");
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+
+
+  // CAN BE CHANGED IF USING DIFFERENT DOC & DRIVE FOLDER
+  const templateId = "1cTB0iR1zpQaRa1sjxUd-OnfyCLWTAwCCwkHH2DXMYXQ
+"; // Google Doc ID
+  const folderId = "1mWryJWvwx1RE2GiJzo5n-VVliCPESXIl"; // Google Drive folder ID
+  const folder = DriveApp.getFolderById(folderId);
+
+
+  // Gets the rows the you selected
+  const selectedRange = sheet.getActiveRange();
+  const rows = selectedRange.getValues();
+  const timeZone = Session.getScriptTimeZone();
+
+
+  // DO NOT CHANGE
+  rows.forEach((row, i) => {
+    const rowData = {};
+    headers.forEach((header, index) => {
+      rowData[header] = row[index];
+    });
+
+
+  // ONLY CHANGE NAME OF PDF YOU WANT TO GENERATE: (`Tax Credit Letter - ${rowData["studentName"]}`, folder);
+    try {
+      const copy = DriveApp.getFileById(templateId).makeCopy(`Tax Credit Letter - ${rowData["studentName"]}`, folder);
+      const doc = DocumentApp.openById(copy.getId());
+      const body = doc.getBody();
+
+
+  // Insert today's date (DO NOT CHANGE)
+      const today = Utilities.formatDate(new Date(), timeZone, "MMMM d, yyyy");
+
+
+  // DO NOT CHANGE WHAT ALREADY EXISTS. ONLY ADD NEW DATA IF YOU CHANGE THE SHEET OR DOC.
+      body.replaceText("{{todayDate}}", today);
+      body.replaceText("{{employerName}}", rowData["employerName"]);
+      body.replaceText("{{address}}", rowData["address"]);
+      body.replaceText("{{studentName}}", rowData["studentName"]);
+      body.replaceText("{{program}}", rowData["program"]);
+      body.replaceText("{{company}}", rowData["company"]);
+      body.replaceText("{{startDate}}", Utilities.formatDate(new Date(rowData["startDate"]), timeZone, "MMMM d, yyyy"));
+      body.replaceText("{{endDate}}", Utilities.formatDate(new Date(rowData["endDate"]), timeZone, "MMMM d, yyyy"));
+
+
+  // DO NOT CHANGE
+      doc.saveAndClose();
+      Utilities.sleep(1000);
+
+
+      // Converts to PDF (DO NOT CHANGE)
+      const pdf = DriveApp.getFileById(doc.getId()).getAs("application/pdf");
+      folder.createFile(pdf).setName(`Letter - ${rowData["studentName"]}.pdf`);
+
+
+      // Optionally remove the Google Doc
+      //DriveApp.getFileById(doc.getId()).setTrashed(true);
+
+
+      // Log timestamp in the sheet (DO NOT CHANGE)
+      const rowPosition = selectedRange.getRow() + i;
+      sheet.getRange(rowPosition, headers.length + 1).setValue(new Date());
+
+
+    } catch (e) {
+      Logger.log(`Error on row ${i + 2}: ${e}`);
+    }
+  });
+
+
+  // DO NOT CHANGE
+  SpreadsheetApp.getUi().alert("Letters generated!");
+}
