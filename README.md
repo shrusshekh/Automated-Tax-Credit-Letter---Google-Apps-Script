@@ -1,7 +1,14 @@
 # Automated-Tax-Credit-Letter - Google Apps Script
-This project automates the creation of personalized tax credit letters directly from a Google Sheet using Google Apps Script. This project was developed as part of my summer job to streamline the process of generating personalized letters for my coworkers. To make the script understandable for non-technical users I added clear in-code comments indicating which parts of the script can and cannot be changed, making it easy for my coworkers to adapt without breaking the automation.
+This project automates the creation of personalized Tax Credit letters directly from Google Sheets using Google Apps Script & Google Docs. It was designed to save time and reduce errors when generating letters for 100+ students, eliminating the need for manual copy-paste edits in Google Docs.
 
-Below is a guide I prepared for my coworkers following the completion of this project. 
+This tool was built as part of a summer job to streamline the Co-op office’s workflow. Staff can now generate dozens of letters in seconds instead of manually editing templates for each student. To make the script understandable for non-technical users I added clear in-code comments indicating which parts of the script can and cannot be changed, making it easy for my coworkers to adapt without breaking the automation.
+
+## Technology Used
+- Google Apps Script (JavaScript-based)
+- Google Sheets & Docs API
+- Google Drive API
+
+Below is a guide I prepared for my coworkers following the completion of this project.
 
 ## **How Do You Use this Automation?**
 1. Open the spreadsheet associated with the Google Apps Script.
@@ -13,8 +20,8 @@ Below is a guide I prepared for my coworkers following the completion of this pr
 7. Every time a letter is generated, it creates a timestamp of when that letter was generated to the right side of the sheet. Double clicking on it will show the exact time of generation. 
 
 ## **What You Can Safely Edit**
-Note: JavaScript is case-sensitive which means anything you rename or change in the document template or spreadsheet should have an exact replication in the Apps Script. 
-Sheet Tab Name
+*Note: JavaScript is case-sensitive which means anything you rename or change in the document template or spreadsheet should have an exact replication in the Apps Script. 
+Sheet Tab Name*
 
 If you rename the spreadsheet tab (e.g. from “Sheet1” to “Co-op Students”), you must update the line highlighted in red to the name of the tab. 
 const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Sheet1");
@@ -44,7 +51,8 @@ body.replaceText("{{jobTitle}}", rowData["jobTitle"]);
 3. As a placeholder (in curly brackets) in your template Doc → {{jobTitle}}
 
 ## **What You Should Not Change**
-Unless you know JavaScript, do not change:
+*Unless you know JavaScript, do not change:*
+
 1. Anything labeled “DO NOT CHANGE” in the code.
 2. The order of replaceText() calls. 
 3. Placeholder names unless you also update your Google Doc to match. 
